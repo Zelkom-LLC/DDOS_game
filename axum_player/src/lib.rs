@@ -35,7 +35,7 @@ impl AppState {
 }
 
 pub async fn poll_readiness(targets: &Vec<String>, app_state: Arc<RwLock<AppState>>) {
-    info!("Starting readiness polling of services");
+    info!("Starting to poll readiness status of target services...");
     loop {
         match check_readiness(targets).await {
             Ok(res) if res == targets.len() => {
@@ -43,12 +43,18 @@ pub async fn poll_readiness(targets: &Vec<String>, app_state: Arc<RwLock<AppStat
                 state.set_services_ready(true);
                 break;
             }
-            Ok(_) => {}
-            Err(e) => error!("{e}"),
+            Ok(ready_count) => {
+                info!(
+                    "Checked readiness: {}/{} services are ready. Continuing to poll...",
+                    ready_count,
+                    targets.len()
+                );
+            }
+            Err(e) => error!("Failed to check readiness of services: {e}"),
         }
         tokio::time::sleep(Duration::from_secs(5)).await;
     }
-    info!("Services are ready!");
+    info!("All services confirmed ready. Proceeding with next steps.");
 }
 
 pub async fn check_readiness(targets: &Vec<String>) -> anyhow::Result<usize> {
@@ -60,17 +66,21 @@ pub async fn check_readiness(targets: &Vec<String>) -> anyhow::Result<usize> {
     for target in targets {
         let url = format!("http://{}/ready", target);
 
-        debug!("Request url: {url}");
+        debug!("Sending readiness request to URL: {}", url);
 
-        match client.get(url).send().await {
+        match client.get(&url).send().await {
             Ok(res) if res.status().is_success() => {
-                info!("Target {} is ready", target);
+                info!("Service at '{}' is ready.", target);
                 ready += 1;
             }
             Ok(res) => {
-                warn!("Target is not ready. Response code is {}", res.status())
+                warn!(
+                    "Service at '{}' responded with status code: {} (not ready yet).",
+                    target,
+                    res.status()
+                );
             }
-            Err(e) => error!("{e}"),
+            Err(e) => error!("Failed to communicate with service at '{}': {}", url, e),
         };
     }
 
