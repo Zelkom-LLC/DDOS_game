@@ -18,7 +18,7 @@ pub async fn health() -> impl IntoResponse {
 pub async fn start_game(
     Extension(app_state): Extension<Arc<RwLock<AppState>>>,
 ) -> impl IntoResponse {
-    info!("Starting the game!");
+    info!("Trying to start the game!");
 
     match app_state.read().await.services_ready() {
         true => (StatusCode::OK, "Starting the game!"),
