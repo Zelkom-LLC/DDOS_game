@@ -54,7 +54,7 @@ async fn attack_target(client: &Client, target: &str) {
         tokio::time::sleep(request_interval).await;
 
         if request_interval > MINIMAL_INTERVAL {
-            request_interval = request_interval - GROWING_INTERVAL_MS;
+            request_interval -= GROWING_INTERVAL_MS;
         }
 
         if request_interval == MINIMAL_INTERVAL {
