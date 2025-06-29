@@ -44,10 +44,14 @@ async fn attack_target(client: &Client, target: &str) {
     loop {
         match client.get(target).send().await {
             Ok(resp) => {
-                info!("Запрос к {}: {}", target, resp.status());
+                info!(
+                    "Request to {} succeeded with status: {}",
+                    target,
+                    resp.status()
+                );
             }
             Err(err) => {
-                info!("Ошибка запроса к {}: {:?}", target, err);
+                error!("Request to {} failed with error: {:?}", target, err);
             }
         }
 
