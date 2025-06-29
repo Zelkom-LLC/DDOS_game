@@ -2,8 +2,9 @@ version: '3.9'
 
 x-service-configuration: &base
     restart: on-failure
-    network_mode: host
+    # network_mode: host # На Mac странно работает данная настройка
     working_dir: /app
+    env_file: .targets
     command:
     - bash
     - "-c"
