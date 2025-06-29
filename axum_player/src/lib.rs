@@ -6,27 +6,35 @@ use tracing::{debug, error, info, warn};
 pub mod game;
 pub mod handles;
 
-const REQUEST_GROWING: usize = 5;
-const GROWING_INTERVAL_MS: usize = 50;
-const INTERVAL_BETWEEN_ATTACKS_MS: usize = 2000;
+pub const REQUEST_GROWING: usize = 5;
+pub const GROWING_INTERVAL_MS: usize = 50;
+pub const INTERVAL_BETWEEN_ATTACKS_MS: usize = 2000;
+
+#[derive(Debug, Default)]
+pub enum ServiceState {
+    #[default]
+    ServicesWaiting,
+    ServicesReady,
+    Game,
+}
 
 #[derive(Debug, Default)]
 pub struct AppState {
-    services_ready: bool,
+    service_state: ServiceState,
     targets: Vec<String>,
 }
 
 impl AppState {
-    pub fn services_ready(&self) -> bool {
-        self.services_ready
+    pub fn service_state(&self) -> &ServiceState {
+        &self.service_state
     }
 
-    pub fn targets(&self) -> &[String] {
+    pub fn targets(&self) -> &Vec<String> {
         &self.targets
     }
 
-    pub fn set_services_ready(&mut self, services_ready: bool) {
-        self.services_ready = services_ready;
+    pub fn set_service_state(&mut self, services_ready: ServiceState) {
+        self.service_state = services_ready;
     }
 
     pub fn set_targets(&mut self, targets: Vec<String>) {
@@ -40,7 +48,8 @@ pub async fn poll_readiness(targets: &Vec<String>, app_state: Arc<RwLock<AppStat
         match check_readiness(targets).await {
             Ok(res) if res == targets.len() => {
                 let mut state = app_state.write().await;
-                state.set_services_ready(true);
+                state.set_service_state(ServiceState::ServicesReady);
+                state.set_targets(targets.clone());
                 break;
             }
             Ok(ready_count) => {
