@@ -25,6 +25,10 @@ func main() {
     // health-check маршрут
     r.GET("/health", health)
 
+    r.GET("/ready", func(c *gin.Context) {
+        c.String(http.StatusOK, "Ready!")
+    })
+
     // запускаем сервер на 0.0.0.0:3000
     if err := r.Run(":8000"); err != nil {
         log.Fatalf("Ошибка запуска сервера: %v", err)
