@@ -29,6 +29,10 @@ func main() {
         c.String(http.StatusOK, "Ready!")
     })
 
+    r.GET("/ping", func(c *gin.Context) {
+        c.String(http.StatusOK, "Pong!")
+    })
+
     // запускаем сервер на 0.0.0.0:3000
     if err := r.Run(":8000"); err != nil {
         log.Fatalf("Ошибка запуска сервера: %v", err)
