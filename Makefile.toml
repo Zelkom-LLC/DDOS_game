@@ -3,7 +3,34 @@ description = "Сборка образов"
 command = "docker"
 args = ["compose", "build"]
 
+[tasks.build-dev]
+description = "Сборка образов для разработки"
+command = "docker"
+args = ["compose", "-f", "compose.dev.yaml", "build"]
+
 [tasks.stats]
 description = "Запуск мониторинга ресурсов контейнеров"
 command = "docker"
 args = ["compose", "stats"]
+
+[tasks.build-up]
+description = "Сборка и развёртка сервисов"
+dependencies = ["build"]
+command = "docker"
+args = ["compose", "up", "-d"]
+
+[tasks.down]
+description = "Останавливаем все сервисы и удаляем их"
+command = "docker"
+args = ["compose", "down"]
+
+[tasks.down-dev]
+description = "Останавливаем все сервисы и удаляем их в среде разработки"
+command = "docker"
+args = ["compose", "-f", "compose.dev.yaml", "down"]
+
+[tasks.build-up-dev]
+description = "Сборка и развёртка сервисов для разработки"
+dependencies = ["build-dev"]
+command = "docker"
+args = ["compose", "-f", "compose.dev.yaml", "up", "-d"]
