@@ -6,9 +6,9 @@ use tracing::{debug, error, info, warn};
 pub mod game;
 pub mod handles;
 
-pub const REQUEST_GROWING: usize = 5;
-pub const GROWING_INTERVAL_MS: usize = 50;
-pub const INTERVAL_BETWEEN_ATTACKS_MS: usize = 2000;
+pub const GROWING_INTERVAL_MS: Duration = Duration::from_millis(50);
+pub const INITIAL_INTERVAL: Duration = Duration::from_secs(1);
+pub const MINIMAL_INTERVAL: Duration = Duration::from_millis(5);
 
 #[derive(Debug, Default)]
 pub enum ServiceState {
