@@ -41,7 +41,6 @@ pub async fn poll_readiness(targets: &Vec<String>, app_state: Arc<RwLock<AppStat
             Ok(res) if res == targets.len() => {
                 let mut state = app_state.write().await;
                 state.set_services_ready(true);
-                info!("Services are ready!");
                 break;
             }
             Ok(_) => {}
@@ -49,6 +48,7 @@ pub async fn poll_readiness(targets: &Vec<String>, app_state: Arc<RwLock<AppStat
         }
         tokio::time::sleep(Duration::from_secs(5)).await;
     }
+    info!("Services are ready!");
 }
 
 pub async fn check_readiness(targets: &Vec<String>) -> anyhow::Result<usize> {
