@@ -7,7 +7,7 @@ use tracing_subscriber::FmtSubscriber;
 
 use axum_player::{
     AppState,
-    handles::{health, ready, start_game},
+    handles::{health, ping, ready, start_game},
     poll_readiness,
 };
 
@@ -45,6 +45,7 @@ async fn main() -> anyhow::Result<()> {
         .route("/health", get(health))
         .route("/ready", get(ready))
         .route("/start_game", get(start_game))
+        .route("/ping", get(ping))
         .layer(Extension(app_state));
 
     // run our app with hyper, listening globally on port 3000

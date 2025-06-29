@@ -41,3 +41,7 @@ pub async fn start_game(
         }
     }
 }
+
+pub async fn ping() -> impl IntoResponse {
+    (StatusCode::OK, "Pong!")
+}
