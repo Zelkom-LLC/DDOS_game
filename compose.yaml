@@ -26,5 +26,5 @@ services:
             dockerfile: Dockerfile
         image: attacker-2
         ports:
-            - "8002:8080"
+            - "8002:8000"
 

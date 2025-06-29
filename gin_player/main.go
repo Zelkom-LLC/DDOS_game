@@ -1,17 +1,37 @@
 package main
 
 import (
+    "log"
+    "net/http"
+
     "github.com/gin-gonic/gin"
+    "github.com/joho/godotenv"
 )
 
 func main() {
-    r := gin.Default() // создаём роутер с набором middleware по умолчанию
+    // загружаем .env (если не найден — просто логируем и идём дальше)
+    if err := godotenv.Load(); err != nil {
+        log.Println("No .env file found:", err)
+    }
 
+    // создаём роутер с дефолтными middleware (логирование, recovery)
+    r := gin.Default()
+
+    // корневой маршрут
     r.GET("/", func(c *gin.Context) {
-        c.JSON(200, gin.H{
-            "message": "Hello, Gin!",
-        })
+        c.String(http.StatusOK, "Hello, Gin!")
     })
 
-    r.Run(":8080") // запускаем сервер на порту 8080
+    // health-check маршрут
+    r.GET("/health", health)
+
+    // запускаем сервер на 0.0.0.0:3000
+    if err := r.Run(":8000"); err != nil {
+        log.Fatalf("Ошибка запуска сервера: %v", err)
+    }
+}
+
+// handler для /health
+func health(c *gin.Context) {
+    c.Status(http.StatusOK)
 }
