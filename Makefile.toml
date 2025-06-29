@@ -1,0 +1,9 @@
+[tasks.build]
+description = "Сборка образов"
+command = "docker"
+args = ["compose", "build"]
+
+[tasks.stats]
+description = "Запуск мониторинга ресурсов контейнеров"
+command = "docker"
+args = ["compose", "stats"]

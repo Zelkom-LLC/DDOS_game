@@ -1,0 +1,32 @@
+version: '3.9'
+
+x-service-configuration: &base
+    restart: on-failure
+    network_mode: host
+    working_dir: /app
+    command:
+    - bash
+    - "-c"
+    - "while true; do echo \"A docker container is still working\"; sleep 3600; done"
+
+services:
+    attacker-1-dev:
+        <<: *base
+        volumes: 
+            - ./axum_player:/app
+        build:
+            context: ./axum_player
+            dockerfile_inline: "FROM rust:1.88.0-bookworm"
+        image: attacker-1-dev
+        ports:
+            - "8001:3000"
+    attacker-2-dev:
+        <<: *base
+        volumes: 
+            - ./gin_player:/app
+        build:
+            context: ./gin_player
+            dockerfile_inline: "FROM golang:1.24.4-bookworm"
+        image: attacker-2-dev
+        ports:
+            - "8002:8000"

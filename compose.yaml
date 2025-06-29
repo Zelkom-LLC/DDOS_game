@@ -1,0 +1,29 @@
+version: '3.9'
+
+x-service-configuration: &base
+    restart: on-failure
+    # network_mode: host # На Mac странно работает данная настройка
+    mem_limit: 1G
+    cpu_count: 2
+    cpus: '0.25'
+    command:
+        - ./app
+
+services:
+    attacker-1:
+        <<: *base
+        build:
+            context: ./axum_player
+            dockerfile: Dockerfile
+        image: attacker-1
+        ports:
+            - "8001:3000"
+    attacker-2:
+        <<: *base
+        build:
+            context: ./gin_player
+            dockerfile: Dockerfile
+        image: attacker-2
+        ports:
+            - "8002:8080"
+
