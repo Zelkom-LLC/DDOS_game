@@ -2,3 +2,5 @@ RUST_ATTACKER = host.docker.internal:8001
 GO_ATTACKER = host.docker.internal:8002
 PYTHON_ATTACKER = host.docker.internal:8003
 JS_ATTACKER = host.docker.internal:8004
+
+LOG_LEVEL = info
