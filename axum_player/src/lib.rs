@@ -1,4 +1,5 @@
 use reqwest::Client;
+use serde::Deserialize;
 use std::sync::Arc;
 use tokio::{sync::RwLock, time::Duration};
 use tracing::{debug, error, info, warn};
@@ -6,10 +7,19 @@ use tracing::{debug, error, info, warn};
 pub mod game;
 pub mod handles;
 
-pub const GROWING_INTERVAL_MS: Duration = Duration::from_millis(50);
-pub const INITIAL_INTERVAL: Duration = Duration::from_secs(1);
-pub const MINIMAL_INTERVAL: Duration = Duration::from_millis(5);
+#[derive(Debug, Deserialize)]
+pub struct GameSettings {
+    pub connections_amount: usize,
+    pub delay_ms: usize,
+    pub round_sec: usize,
+    pub difficulties: usize,
+    pub targets: Vec<String>,
+}
 
+#[deprecated = "There is not anymore needed in that project"]
+pub const INITIAL_INTERVAL: Duration = Duration::from_millis(1);
+
+#[deprecated = "There is not anymore needed in that project"]
 #[derive(Debug, Default)]
 pub enum ServiceState {
     #[default]
@@ -18,6 +28,7 @@ pub enum ServiceState {
     Game,
 }
 
+#[deprecated = "There is not anymore needed in that project"]
 #[derive(Debug, Default)]
 pub struct AppState {
     service_state: ServiceState,
@@ -42,6 +53,7 @@ impl AppState {
     }
 }
 
+#[deprecated = "There is not anymore needed in that project"]
 pub async fn poll_readiness(targets: &Vec<String>, app_state: Arc<RwLock<AppState>>) {
     info!("Starting to poll readiness status of target services...");
     loop {
@@ -66,6 +78,7 @@ pub async fn poll_readiness(targets: &Vec<String>, app_state: Arc<RwLock<AppStat
     info!("All services confirmed ready. Proceeding with next steps.");
 }
 
+#[deprecated = "There is not anymore needed in that project"]
 pub async fn check_readiness(targets: &Vec<String>) -> anyhow::Result<usize> {
     let client = Client::builder()
         .connect_timeout(Duration::from_secs(5))
