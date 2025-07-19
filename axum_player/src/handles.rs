@@ -1,10 +1,11 @@
-use axum::{Extension, response::IntoResponse};
+use axum::{Json, response::IntoResponse};
 use reqwest::StatusCode;
-use std::sync::Arc;
-use tokio::sync::RwLock;
-use tracing::{info, warn};
+use tracing::{error, info,};
 
-use crate::{AppState, ServiceState, game::start_attack_game};
+use crate::{
+     GameSettings, 
+    game::{fibonacci_iterative, start_attack_game},
+};
 
 pub async fn ready() -> impl IntoResponse {
     (StatusCode::OK, "Ready!")
@@ -15,33 +16,22 @@ pub async fn health() -> impl IntoResponse {
     (StatusCode::OK, "I'm good")
 }
 
-pub async fn start_game(
-    Extension(app_state): Extension<Arc<RwLock<AppState>>>,
-) -> impl IntoResponse {
-    info!("Trying to start the game!");
+pub async fn defense(Json(attack): Json<usize>) -> impl IntoResponse {
+    let res = fibonacci_iterative(attack);
 
-    match app_state.read().await.service_state() {
-        ServiceState::ServicesWaiting => {
-            warn!("Cannot start game: services are still initializing.");
-            (
-                StatusCode::METHOD_NOT_ALLOWED,
-                "Waiting for other services!",
-            )
-        }
-        ServiceState::Game => {
-            warn!("Cannot start game: a game is already in process.");
-            (StatusCode::METHOD_NOT_ALLOWED, "Game is in process!")
-        }
-        ServiceState::ServicesReady => {
-            info!("All services ready, starting the game...");
-
-            let app_state_ref = app_state.clone();
-            tokio::spawn(async move { start_attack_game(app_state_ref).await });
-            (StatusCode::OK, "Starting the game!")
-        }
-    }
+    (StatusCode::OK, format!("Defense! - {}", res))
 }
 
-pub async fn ping() -> impl IntoResponse {
-    (StatusCode::OK, "Pong!")
+pub async fn start(Json(settings): Json<GameSettings>) -> impl IntoResponse {
+    info!(
+        "Start the round with settings\nSettings: connections = {}, delay = {}ms, round = {}s, targets = {:?}",
+        settings.connections_amount, settings.delay_ms, settings.round_sec, settings.targets
+    );
+
+    match start_attack_game(settings).await {
+        Ok(_) => info!("Round was finished!"),
+        Err(err) => error!("{err}"),
+    };
+
+    StatusCode::OK
 }
