@@ -99,6 +99,7 @@ dependencies = [
  "futures",
  "lazy_static",
  "reqwest",
+ "serde",
  "tokio",
  "tracing",
  "tracing-subscriber",
