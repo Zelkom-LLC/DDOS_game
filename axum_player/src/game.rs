@@ -6,7 +6,7 @@ use std::sync::{
 use tokio::{task::JoinSet, time::Duration};
 use tracing::{debug, error, info};
 
-use crate::GameSettings;
+use crate::{AttackType, GameSettings};
 
 pub mod strategy;
 
@@ -23,16 +23,23 @@ pub async fn start_attack_game(settings: GameSettings) -> anyhow::Result<()> {
         Arc::new(client)
     };
 
-    let mut targets = JoinSet::new();
-
     for target in settings.targets.clone() {
         let is_playing = is_playing.clone();
         let client = client.clone();
         let settings = settings.clone();
-        let target = Arc::new(format!("http://{target}/defence/{}", settings.difficulties));
+
+        let target = Arc::new(format!(
+            "http://{target}/{}",
+            match settings.attack_type {
+                AttackType::Burn => format!("{}", AttackType::Burn),
+                AttackType::Bomb => format!("{}", AttackType::Bomb),
+                AttackType::FibRec(iter) => format!("{}/{}", AttackType::FibRec(iter), iter),
+                AttackType::FibIter(iter) => format!("{}/{}", AttackType::FibIter(iter), iter),
+            }
+        ));
 
         // Main attack task
-        targets.spawn(async move {
+        tokio::spawn(async move {
             // Stopping algorithm
             {
                 let is_playing = is_playing.clone();
@@ -47,12 +54,6 @@ pub async fn start_attack_game(settings: GameSettings) -> anyhow::Result<()> {
 
             attack_target(is_playing, settings, client, target).await;
         });
-    }
-
-    while let Some(res) = targets.join_next().await {
-        if let Err(err) = res {
-            error!("JoinSet error: {:?}", err);
-        }
     }
 
     Ok(())
@@ -76,7 +77,7 @@ async fn attack_target(
             debug!("Attacker with target {target} idx {idx} is playing!");
 
             while is_playing.load(Ordering::Relaxed) {
-                match client.get(&*target).send().await {
+                match client.post(&*target).send().await {
                     Ok(resp) => {
                         if resp.status().is_client_error() {
                             info!(
@@ -85,17 +86,14 @@ async fn attack_target(
                                 resp.status().is_client_error()
                             );
                         }
-
-                        if resp.status().is_server_error() {
-                            info!(
-                                "Request to {} succeeded with status: {}",
-                                target,
-                                resp.status().is_client_error()
-                            );
-                        }
                     }
                     Err(err) => {
-                        error!("Request to {} failed with error: {:?}", target, err);
+                        err.status().inspect(|err| {
+                            if err.is_client_error() {
+                                error!("Request to {} failed with error: {:?}", target, err)
+                            }
+                        });
+
                         return;
                     }
                 }
