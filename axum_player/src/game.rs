@@ -43,7 +43,7 @@ pub async fn start_attack_game(settings: GameSettings) -> anyhow::Result<()> {
                 });
             }
 
-            attack_target_new(is_playing, settings, client, target).await;
+            attack_target(is_playing, settings, client, target).await;
         });
     }
 
@@ -56,7 +56,7 @@ pub async fn start_attack_game(settings: GameSettings) -> anyhow::Result<()> {
     Ok(())
 }
 
-async fn attack_target_new(
+async fn attack_target(
     is_playing: Arc<AtomicBool>,
     settings: Arc<GameSettings>,
     client: Arc<Client>,
