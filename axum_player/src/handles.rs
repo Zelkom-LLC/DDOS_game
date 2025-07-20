@@ -1,9 +1,9 @@
-use axum::{Json, response::IntoResponse};
+use axum::{Json, extract::Path, response::IntoResponse};
 use reqwest::StatusCode;
-use tracing::{error, info,};
+use tracing::{error, info};
 
 use crate::{
-     GameSettings, 
+    GameSettings,
     game::{fibonacci_iterative, start_attack_game},
 };
 
@@ -16,10 +16,11 @@ pub async fn health() -> impl IntoResponse {
     (StatusCode::OK, "I'm good")
 }
 
-pub async fn defense(Json(attack): Json<usize>) -> impl IntoResponse {
-    let res = fibonacci_iterative(attack);
-
-    (StatusCode::OK, format!("Defense! - {}", res))
+pub async fn defense(Path(attack): Path<usize>) -> impl IntoResponse {
+    (
+        StatusCode::OK,
+        format!("Defense! - {}", fibonacci_iterative(attack)),
+    )
 }
 
 pub async fn start(Json(settings): Json<GameSettings>) -> impl IntoResponse {
