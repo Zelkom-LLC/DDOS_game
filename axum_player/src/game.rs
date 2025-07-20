@@ -113,18 +113,18 @@ async fn attack_target_new(
     info!("Attack on target {target} is finished!");
 }
 
-pub fn fibonacci_iterative(n: usize) -> usize {
+pub fn fibonacci_iterative(n: u128) -> u128 {
     if n == 0 {
         return 0;
     } else if n == 1 {
         return 1;
     }
 
-    let mut prev = 0;
-    let mut curr = 1;
+    let mut prev: u128 = 0;
+    let mut curr: u128 = 1;
 
     for _ in 2..=n {
-        let next = prev + curr;
+        let next = prev.checked_add(curr).unwrap_or_else(|| curr);
         prev = curr;
         curr = next;
     }

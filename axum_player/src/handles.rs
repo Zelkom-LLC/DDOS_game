@@ -16,7 +16,7 @@ pub async fn health() -> impl IntoResponse {
     (StatusCode::OK, "I'm good")
 }
 
-pub async fn defense(Path(attack): Path<usize>) -> impl IntoResponse {
+pub async fn defense(Path(attack): Path<u128>) -> impl IntoResponse {
     (
         StatusCode::OK,
         format!("Defense! - {}", fibonacci_iterative(attack)),
