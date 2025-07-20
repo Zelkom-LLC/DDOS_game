@@ -3,12 +3,12 @@ package main
 import (
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 
-	"attacker/game"
+    "attacker/handlers"
+    "attacker/game"
 )
 
 func main() {
@@ -32,7 +32,11 @@ func main() {
 		c.String(http.StatusOK, "Ready!")
 	})
 
-	r.POST("/defense/:attack", defense)
+	r.POST("/start", start)
+
+	r.POST("/fib_rec/:iter", handlers.FibonacciHandler)
+	r.POST("/fib_iter/:iter", handlers.FibonacciIterativeHandler)
+	r.POST("/burn/:iter", handlers.BurnCPUHandler)
 
 	// запускаем сервер на 0.0.0.0:3000
 	if err := r.Run(":8000"); err != nil {
@@ -45,14 +49,18 @@ func health(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-func defense(c *gin.Context) {
-	attackStr := c.Param("attack")
-	attack, err := strconv.ParseUint(attackStr, 10, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid number"})
+func start(c *gin.Context) {
+	var settings game.GameSettings
+
+	if err := c.ShouldBindJSON(&settings); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
 	}
 
-	result := game.Fibonacci_iterative(attack)
-	c.String(http.StatusOK, "Defense! - %d", result)
+	log.Printf("Start the round with settings\nSettings: connections = %d, delay = %dms, round = %ds, targets = %v",
+		settings.ConnectionsAmount, settings.DelayMs, settings.RoundSec, settings.Targets)
+
+	go game.Start_attack_game(settings)
+
+	c.Status(http.StatusOK)
 }
