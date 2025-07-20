@@ -124,7 +124,7 @@ pub fn fibonacci_iterative(n: u128) -> u128 {
     let mut curr: u128 = 1;
 
     for _ in 2..=n {
-        let next = prev.checked_add(curr).unwrap_or_else(|| curr);
+        let next = prev.checked_add(curr).unwrap_or(curr);
         prev = curr;
         curr = next;
     }
