@@ -7,7 +7,24 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+	"encoding/json"
 )
+
+func (a *AttackType) UnmarshalJSON(data []byte) error {
+	var raw map[string]uint64
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	for k, v := range raw {
+		a.Type = k
+		a.Value = v
+		return nil
+	}
+	a.Type = ""
+	a.Value = 0
+	return nil
+}
+
 
 type AttackType struct {
 	Type  string `json:"type"`
