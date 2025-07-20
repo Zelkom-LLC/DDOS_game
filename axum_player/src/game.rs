@@ -27,7 +27,7 @@ pub async fn start_attack_game(settings: GameSettings) -> anyhow::Result<()> {
         let is_playing = is_playing.clone();
         let client = client.clone();
         let settings = settings.clone();
-        let target = Arc::new(format!("http://{target}/defence"));
+        let target = Arc::new(format!("http://{target}/defence/{}", settings.difficulties));
 
         // Main attack task
         targets.spawn(async move {
@@ -74,12 +74,7 @@ async fn attack_target_new(
             debug!("Attacker with target {target} idx {idx} is playing!");
 
             while is_playing.load(Ordering::Relaxed) {
-                match client
-                    .get(&*target)
-                    .body(settings.difficulties.to_string())
-                    .send()
-                    .await
-                {
+                match client.get(&*target).send().await {
                     Ok(resp) => {
                         if resp.status().is_client_error() {
                             info!(
