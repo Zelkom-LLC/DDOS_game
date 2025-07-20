@@ -8,6 +8,8 @@ use tracing::{debug, error, info};
 
 use crate::GameSettings;
 
+pub mod strategy;
+
 pub async fn start_attack_game(settings: GameSettings) -> anyhow::Result<()> {
     let settings = Arc::new(settings);
 
@@ -111,23 +113,4 @@ async fn attack_target(
     }
 
     info!("Attack on target {target} is finished!");
-}
-
-pub fn fibonacci_iterative(n: u128) -> u128 {
-    if n == 0 {
-        return 0;
-    } else if n == 1 {
-        return 1;
-    }
-
-    let mut prev: u128 = 0;
-    let mut curr: u128 = 1;
-
-    for _ in 2..=n {
-        let next = prev.checked_add(curr).unwrap_or(curr);
-        prev = curr;
-        curr = next;
-    }
-
-    curr
 }
