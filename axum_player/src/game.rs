@@ -31,7 +31,7 @@ pub async fn start_attack_game(settings: GameSettings) -> anyhow::Result<()> {
         let target = Arc::new(format!(
             "http://{target}/{}",
             match settings.attack_type {
-                AttackType::Burn => format!("{}", AttackType::Burn),
+                AttackType::Burn(iter) => format!("{}/{}", AttackType::Burn(iter), iter),
                 AttackType::Bomb => format!("{}", AttackType::Bomb),
                 AttackType::FibRec(iter) => format!("{}/{}", AttackType::FibRec(iter), iter),
                 AttackType::FibIter(iter) => format!("{}/{}", AttackType::FibIter(iter), iter),

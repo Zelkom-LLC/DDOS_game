@@ -8,7 +8,7 @@ pub mod handles;
 #[serde(rename_all = "snake_case")]
 #[strum(serialize_all = "snake_case")]
 pub enum AttackType {
-    Burn,
+    Burn(usize),
     Bomb,
     FibRec(u128),
     FibIter(u128),
