@@ -4,7 +4,10 @@ use tracing::{error, info};
 
 use crate::{
     GameSettings,
-    game::{fibonacci_iterative, start_attack_game},
+    game::{
+        start_attack_game,
+        strategy::{burn_cpu, fibonacci, fibonacci_iterative},
+    },
 };
 
 pub async fn ready() -> impl IntoResponse {
@@ -16,11 +19,19 @@ pub async fn health() -> impl IntoResponse {
     (StatusCode::OK, "I'm good")
 }
 
-pub async fn defense(Path(attack): Path<u128>) -> impl IntoResponse {
+pub async fn fib_rec(Path(attack): Path<u128>) -> impl IntoResponse {
+    (StatusCode::OK, format!("Defense! - {}", fibonacci(attack)))
+}
+
+pub async fn fib_iter(Path(attack): Path<u128>) -> impl IntoResponse {
     (
         StatusCode::OK,
         format!("Defense! - {}", fibonacci_iterative(attack)),
     )
+}
+
+pub async fn burn(Path(attack): Path<usize>) -> impl IntoResponse {
+    (StatusCode::OK, format!("Defense! - {}", burn_cpu(attack)))
 }
 
 pub async fn start(Json(settings): Json<GameSettings>) -> impl IntoResponse {
@@ -30,7 +41,7 @@ pub async fn start(Json(settings): Json<GameSettings>) -> impl IntoResponse {
     );
 
     match start_attack_game(settings).await {
-        Ok(_) => info!("Round was finished!"),
+        Ok(_) => info!("Round was started!"),
         Err(err) => error!("{err}"),
     };
 

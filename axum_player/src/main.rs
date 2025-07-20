@@ -7,7 +7,7 @@ use std::str::FromStr;
 use tracing::{Level, info, warn};
 use tracing_subscriber::FmtSubscriber;
 
-use axum_player::handles::{defense, health, ready, start};
+use axum_player::handles::{burn, fib_iter, fib_rec, health, ready, start};
 
 #[tokio::main(flavor = "multi_thread")]
 async fn main() -> anyhow::Result<()> {
@@ -31,7 +31,9 @@ async fn main() -> anyhow::Result<()> {
         .route("/health", get(health))
         .route("/ready", get(ready))
         .route("/start", post(start))
-        .route("/defense/{difficulties}", post(defense));
+        .route("/fib_rec/{iter}", post(fib_rec))
+        .route("/fib_iter/{iter}", post(fib_iter))
+        .route("/burn/{iter}", post(burn));
 
     // run our app with hyper, listening globally on port 3000
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await?;
