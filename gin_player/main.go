@@ -1,11 +1,14 @@
 package main
 
 import (
-    "log"
-    "net/http"
+	"log"
+	"net/http"
+	"strconv"
 
-    "github.com/gin-gonic/gin"
-    "github.com/joho/godotenv"
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+
+	"attacker/game"
 )
 
 func main() {

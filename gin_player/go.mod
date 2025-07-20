@@ -1,4 +1,4 @@
-module attacker/gin
+module attacker
 
 go 1.24.4
 
