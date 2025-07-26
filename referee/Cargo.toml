@@ -1,0 +1,17 @@
+[package]
+name = "referee"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.98"
+axum = {version = "0.8.4", features = ["macros"]}
+dotenvy = "0.15.7"
+reqwest = "0.12.22"
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.141"
+strum = "0.27.2"
+strum_macros = "0.27.2"
+tokio = { version = "1.46.1", features = ["full"] }
+tracing = "0.1.41"
+tracing-subscriber = "0.3.19"
