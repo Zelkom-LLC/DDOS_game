@@ -1,14 +1,8 @@
-use axum::{Json, extract::Path, response::IntoResponse};
+use axum::{extract::Path, response::IntoResponse};
 use reqwest::StatusCode;
-use tracing::{error, info};
+use tracing::info;
 
-use crate::{
-    GameSettings,
-    game::{
-        start_attack_game,
-        strategy::{burn_cpu, fibonacci, fibonacci_iterative},
-    },
-};
+use crate::game::{burn_cpu, fibonacci, fibonacci_iterative};
 
 pub async fn ready() -> impl IntoResponse {
     (StatusCode::OK, "Ready!")
@@ -32,18 +26,4 @@ pub async fn fib_iter(Path(attack): Path<u128>) -> impl IntoResponse {
 
 pub async fn burn(Path(attack): Path<usize>) -> impl IntoResponse {
     (StatusCode::OK, format!("Defense! - {}", burn_cpu(attack)))
-}
-
-pub async fn start(Json(settings): Json<GameSettings>) -> impl IntoResponse {
-    info!(
-        "Start the round with settings\nSettings: connections = {}, delay = {}ms, round = {}s, targets = {:?}",
-        settings.connections_amount, settings.delay_ms, settings.round_sec, settings.targets
-    );
-
-    match start_attack_game(settings).await {
-        Ok(_) => info!("Round was started!"),
-        Err(err) => error!("{err}"),
-    };
-
-    StatusCode::OK
 }

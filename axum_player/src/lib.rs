@@ -13,12 +13,3 @@ pub enum AttackType {
     FibRec(u128),
     FibIter(u128),
 }
-
-#[derive(Debug, Deserialize)]
-pub struct GameSettings {
-    pub connections_amount: usize,
-    pub delay_ms: usize,
-    pub round_sec: usize,
-    pub attack_type: AttackType,
-    pub targets: Vec<String>,
-}
