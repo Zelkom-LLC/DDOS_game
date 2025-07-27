@@ -6,7 +6,11 @@ pub async fn game(target: &str, game_settings: &GameSettings) -> anyhow::Result<
     let threads = format!("-t{}", game_settings.threads);
     let connections = format!("-c{}", game_settings.connections_amount);
     let durations = format!("-d{}s", game_settings.round_sec);
-    let target = format!("http://{}", target);
+    let target = format!(
+        "http://{}/{}",
+        target,
+        game_settings.attack_type.get_url_strategy()
+    );
 
     let output = Command::new("wrk")
         .args(&[threads, connections, durations, target])
