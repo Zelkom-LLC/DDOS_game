@@ -14,16 +14,19 @@ pub async fn health() -> impl IntoResponse {
 }
 
 pub async fn fib_rec(Path(attack): Path<u128>) -> impl IntoResponse {
-    (StatusCode::OK, format!("Defense! - {}", fibonacci(attack)))
+    let res = fibonacci(attack);
+    info!("fib_rec - {res}");
+    (StatusCode::OK, format!("Defense! - {}", res))
 }
 
 pub async fn fib_iter(Path(attack): Path<u128>) -> impl IntoResponse {
-    (
-        StatusCode::OK,
-        format!("Defense! - {}", fibonacci_iterative(attack)),
-    )
+    let res = fibonacci_iterative(attack);
+    info!("fib_iter - {res}");
+    (StatusCode::OK, format!("Defense! - {}", res))
 }
 
 pub async fn burn(Path(attack): Path<usize>) -> impl IntoResponse {
-    (StatusCode::OK, format!("Defense! - {}", burn_cpu(attack)))
+    let res = burn_cpu(attack);
+    info!("burn - {res}");
+    (StatusCode::OK, format!("Defense! - {}", res))
 }

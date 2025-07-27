@@ -1,7 +1,4 @@
-use axum::{
-    Router,
-    routing::{get, post},
-};
+use axum::{Router, routing::get};
 use dotenvy::dotenv;
 use std::str::FromStr;
 use tracing::{Level, info, warn};
@@ -30,9 +27,9 @@ async fn main() -> anyhow::Result<()> {
         .route("/", get(|| async { "Hello, Axum!" }))
         .route("/health", get(health))
         .route("/ready", get(ready))
-        .route("/fib_rec/{iter}", post(fib_rec))
-        .route("/fib_iter/{iter}", post(fib_iter))
-        .route("/burn/{iter}", post(burn));
+        .route("/fib_rec/{iter}", get(fib_rec))
+        .route("/fib_iter/{iter}", get(fib_iter))
+        .route("/burn/{iter}", get(burn));
 
     // run our app with hyper, listening globally on port 3000
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await?;
