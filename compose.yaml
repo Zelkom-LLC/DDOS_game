@@ -6,8 +6,6 @@ x-service-configuration: &base
     mem_limit: 256MB
     cpu_count: 2
     cpus: '1'
-    command:
-        - ./app
 
 services:
     referee:
