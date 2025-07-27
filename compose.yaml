@@ -34,4 +34,12 @@ services:
         env_file: ./gin_player/.env
         ports:
             - "8002:8000"
+    attacker-3:
+        <<: *base
+        build:
+            context: ./express_player
+            dockerfile: Dockerfile
+        image: attacker-3
+        ports:
+            - "8003:8080"
 
