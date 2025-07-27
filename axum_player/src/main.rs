@@ -4,7 +4,7 @@ use std::str::FromStr;
 use tracing::{Level, info, warn};
 use tracing_subscriber::FmtSubscriber;
 
-use axum_player::handles::{burn, fib_iter, fib_rec, health, ready};
+use axum_player::handles::{bomb, burn, fib_iter, fib_rec, health, ready};
 
 #[tokio::main(flavor = "multi_thread")]
 async fn main() -> anyhow::Result<()> {
@@ -27,6 +27,7 @@ async fn main() -> anyhow::Result<()> {
         .route("/", get(|| async { "Hello, Axum!" }))
         .route("/health", get(health))
         .route("/ready", get(ready))
+        .route("/bomb", get(bomb))
         .route("/fib_rec/{iter}", get(fib_rec))
         .route("/fib_iter/{iter}", get(fib_iter))
         .route("/burn/{iter}", get(burn));

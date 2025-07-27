@@ -13,6 +13,11 @@ pub async fn health() -> impl IntoResponse {
     (StatusCode::OK, "I'm good")
 }
 
+pub async fn bomb() -> impl IntoResponse {
+    info!("Defense!");
+    (StatusCode::OK, "Defense!")
+}
+
 pub async fn fib_rec(Path(attack): Path<u128>) -> impl IntoResponse {
     let res = fibonacci(attack);
     info!("fib_rec - {res}");
