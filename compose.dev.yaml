@@ -31,3 +31,13 @@ services:
         image: attacker-2-dev
         ports:
             - "8002:8000"
+    attacker-3-dev:
+        <<: *base
+        volumes: 
+            - ./express_player:/app
+        build:
+            context: ./express_player
+            dockerfile_inline: "FROM oven/bun:1.2.19-debian"
+        image: attacker-3-dev
+        ports:
+            - "8003:8000"
