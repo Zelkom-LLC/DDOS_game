@@ -25,6 +25,7 @@ app.get("/fib_rec/:iter", (req: Request, res: Response) => {
         return res.status(400).json({ error: "invalid number" });
     }
     const result = fibonacciRec(iter);
+    console.log("Defense - ", result);
     res.json({ result });
 });
 
@@ -35,6 +36,7 @@ app.get("/fib_iter/:iter", (req: Request, res: Response) => {
         return res.status(400).json({ error: "invalid number" });
     }
     const result = fibonacciIter(iter);
+    console.log("Defense - ", result);
     res.json({ result });
 });
 
@@ -45,6 +47,7 @@ app.get("/burn/:iter", (req: Request, res: Response) => {
         return res.status(400).json({ error: "invalid number" });
     }
     const result = burnCPU(iter);
+    console.log("Defense - ", result);
     res.json({ result });
 });
 
