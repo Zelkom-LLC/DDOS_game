@@ -6,7 +6,6 @@ x-service-configuration: &base
     mem_limit: 256MB
     cpu_count: 2
     cpus: '1'
-    env_file: .targets
     command:
         - ./app
 
@@ -34,6 +33,7 @@ services:
             context: ./gin_player
             dockerfile: Dockerfile
         image: attacker-2
+        env_file: ./gin_player/.env
         ports:
             - "8002:8000"
 
