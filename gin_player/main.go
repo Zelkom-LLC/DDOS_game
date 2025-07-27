@@ -5,15 +5,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	// загружаем .env (если не найден — просто логируем и идём дальше)
-	if err := godotenv.Load(); err != nil {
-		log.Println("No .env file found:", err)
-	}
-
 	// создаём роутер с дефолтными middleware (логирование, recovery)
 	r := gin.Default()
 
