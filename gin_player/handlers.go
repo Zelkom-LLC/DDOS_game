@@ -1,12 +1,10 @@
-package handlers
+package main
 
 import (
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-
-	"attacker/strategy"
 )
 
 // Обёртка для рекурсивного фибоначчи
@@ -17,7 +15,7 @@ func FibonacciHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid number"})
 		return
 	}
-	result := strategy.Fibonacci(n)
+	result := Fibonacci(n)
 	c.JSON(http.StatusOK, gin.H{"result": result})
 }
 
@@ -29,7 +27,7 @@ func FibonacciIterativeHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid number"})
 		return
 	}
-	result := strategy.FibonacciIterative(n)
+	result := FibonacciIterative(n)
 	c.JSON(http.StatusOK, gin.H{"result": result})
 }
 
@@ -41,6 +39,6 @@ func BurnCPUHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid number"})
 		return
 	}
-	result := strategy.BurnCPU(n)
+	result := BurnCPU(n)
 	c.JSON(http.StatusOK, gin.H{"result": result})
 }

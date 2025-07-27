@@ -1,4 +1,4 @@
-package strategy
+package main
 
 func Fibonacci(n uint64) uint64 {
 	switch n {
