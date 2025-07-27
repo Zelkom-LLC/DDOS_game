@@ -14,8 +14,19 @@ pub mod handlers;
 pub enum AttackType {
     Burn(usize),
     Bomb,
-    FibRec(u128),
-    FibIter(u128),
+    FibRec(u64),
+    FibIter(u64),
+}
+
+impl AttackType {
+    pub fn get_url_strategy(&self) -> String {
+        match self {
+            AttackType::Burn(burn) => format!("{}/{burn}", AttackType::Burn(*burn)),
+            AttackType::Bomb => format!("{}", AttackType::Bomb),
+            AttackType::FibRec(iter) => format!("{}/{iter}", AttackType::FibRec(*iter)),
+            AttackType::FibIter(iter) => format!("{}/{iter}", AttackType::FibIter(*iter)),
+        }
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
